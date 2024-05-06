@@ -11,3 +11,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* BlackCard.css */
+
+.black-card {
+  background-color: black; /* Set background color */
+  color: white; /* Set text color */
+  padding: 20px; /* Add padding */
+  border-radius: 10px; /* Add border radius for rounded corners */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow for depth */
+  max-width: 400px; /* Adjust the maximum width as needed */
+  margin: 0 auto; /* Center the card horizontally */
+}
+
+.black-card p {
+  margin: 0; /* Remove default paragraph margin */
+}
+
