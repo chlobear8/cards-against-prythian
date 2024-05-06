@@ -15,16 +15,39 @@ code {
 /* BlackCard.css */
 
 .black-card {
-  background-color: black; /* Set background color */
-  color: white; /* Set text color */
-  padding: 20px; /* Add padding */
-  border-radius: 10px; /* Add border radius for rounded corners */
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow for depth */
-  max-width: 400px; /* Adjust the maximum width as needed */
-  margin: 0 auto; /* Center the card horizontally */
+  background-color: black; 
+  color: white; 
+  padding: 20px; 
+  border-radius: 10px; 
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 0 auto; 
 }
 
 .black-card p {
-  margin: 0; /* Remove default paragraph margin */
+  margin: 0;
 }
+
+/* WhiteCard.css */
+
+.white-card {
+  background-color: white;
+  color: black;
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.3s ease; 
+  max-width: 400px; 
+  margin: 0 auto; 
+}
+
+.white-card:hover {
+  background-color: #f0f0f0;
+}
+
+.white-card p {
+  margin: 0; 
+}
+
 
