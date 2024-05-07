@@ -54,16 +54,6 @@ export default function App() {
       setSelectedCards(updatedSelectedCards);
   };
 
-  //   const newSelectedCards = [...selectedCards];
-  //   const index = newSelectedCards[playerIndex].indexOf(cardIndex);
-  //   if (index === -1) {
-  //     newSelectedCards[playerIndex].push(cardIndex);
-  //   } else {
-  //     newSelectedCards[playerIndex].splice(index, 1);
-  //   }
-  //   setSelectedCards(newSelectedCards);
-  // };
-
   const playWhiteCard = (playerIndex) => {
     const cardsToPlay = selectedCards[playerIndex].map(cardIndex => players[playerIndex].hand[cardIndex]);
     const updatedPlayers = [...players];
@@ -73,14 +63,6 @@ export default function App() {
     setPlayers([updatedPlayers]);
     setSelectedCards(new Array(players.length).fill([]));
   };
-
-  // const playWhiteCard = (playerIndex, cardIndex) => {
-  //   const currentPlayer = players[playerIndex];
-  //   const cardToPlay = currentPlayer.hand[cardIndex];
-  //   currentPlayer.hand.splice(cardIndex, 1);
-  //   setPlayedWhiteCards(prevCards => [...prevCards, cardToPlay]);
-  //   setPlayers([...players]);
-  // };
 
   const resetPlayerHands = () => {
     const resetPlayers = players.map(player => {
@@ -140,7 +122,6 @@ export default function App() {
             </div>
           ))}
         </div>
-        {/* onClick={() => playWhiteCard(index, cardIndex)} */}
         <button onClick={() => playWhiteCard(index)}>Play Selected Cards</button>
         <button onClick={() => drawWhiteCard(index, deck)}>Draw White Card</button>
       </div>
