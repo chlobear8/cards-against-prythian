@@ -1,5 +1,5 @@
 
-const blackCardOptions = [
+const blackCardDeck = [
   {
     text: "Fill in the blank: ___ is the best way to relax.",
   },
@@ -11,4 +11,4 @@ const blackCardOptions = [
   },
 ];
 
-export default blackCardOptions;
+export default blackCardDeck;
