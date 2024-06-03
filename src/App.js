@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BlackCard from './Components/BlackCard';
 import WhiteCard from './Components/WhiteCard';
 import Player from './Player';
@@ -26,6 +26,7 @@ export default function App() {
   const [playedWhiteCards, setPlayedWhiteCards] = useState([]);
 
   useEffect(() => {
+    drawNewBlackCard();
     drawInitialHands();
   }, [round]);
 
