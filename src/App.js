@@ -83,13 +83,24 @@ export default function App() {
     setSelectedCards(new Array(players.length).fill([]));
   };
 
-  const resetPlayerHands = () => {
-    const resetPlayers = players.map(player => {
-      player.hand = [];
-      return player;
+  const drawReplacementCards = () => {
+    const updatedPlayers = [...players];
+    updatedPlayers.forEach(player => {
+      while (player.hand.length < 7) {
+        player.drawWhiteCard(deck);
+      }
     });
-    setPlayers(resetPlayers);
+    setPlayers(updatedPlayers);
+    setDeck([...deck]);
   };
+
+  // const resetPlayerHands = () => {
+  //   const resetPlayers = players.map(player => {
+  //     player.hand = [];
+  //     return player;
+  //   });
+  //   setPlayers(resetPlayers);
+  // };
 
   const selectWinner = (playerIndex, cardText) => {
     const updatedPlayers = [...players];
@@ -104,7 +115,7 @@ export default function App() {
   };
 
   const resetRoundData = () => {
-    resetPlayerHands();
+    drawReplacementCards();
     setPlayedWhiteCards([]);
   };
 
