@@ -24,6 +24,7 @@ export default function App() {
     []
   ]);
   const [playedWhiteCards, setPlayedWhiteCards] = useState([]);
+  const [handVisibility, setHandVisibility] = useState([false, false, false, false, false]);
 
   useEffect(() => {
     drawNewBlackCard();
@@ -54,6 +55,12 @@ export default function App() {
     setDeck([...deck]);
   };
 
+  const drawNewBlackCard = () => {
+    const randomIndex = Math.floor(Math.random() * blackCardDeck.length);
+    const drawnCard = blackCardDeck.splice(randomIndex, 1)[0];
+    setCurrentBlackCard(drawnCard);
+  };
+
   const toggleCardSelection = (playerIndex, cardIndex) => {
     const updatedSelectedCards = [...selectedCards];
     const selectedCardsForPlayer = updatedSelectedCards[playerIndex];
@@ -71,7 +78,7 @@ export default function App() {
     const cardsToPlay = selectedCards[playerIndex].map(cardIndex => players[playerIndex].hand[cardIndex]);
     const updatedPlayers = [...players];
     updatedPlayers[playerIndex].hand = updatedPlayers[playerIndex].hand.filter((_, index) => !selectedCards[playerIndex].includes(index));
-    setPlayedWhiteCards(prevCards => [...prevCards, ...cardsToPlay]);
+    setPlayedWhiteCards(prevCards => [...prevCards, { playerIndex, cardsToPlay }]);
     setPlayers(updatedPlayers);
     setSelectedCards(new Array(players.length).fill([]));
   };
@@ -84,27 +91,27 @@ export default function App() {
     setPlayers(resetPlayers);
   };
 
-  const drawNewBlackCard = () => {
-    const randomIndex = Math.floor(Math.random() * blackCardDeck.length);
-    const drawnCard = blackCardDeck.splice(randomIndex, 1)[0];
-    setCurrentBlackCard(drawnCard);
-  };
-
-  const selectWinner = (playerIndex) => {
+  const selectWinner = (playerIndex, cardText) => {
     const updatedPlayers = [...players];
     updatedPlayers[playerIndex].score += 1;
     setPlayers(updatedPlayers);
-  }
+    console.log(`Winner: Player ${playerIndex + 1}, Card: ${cardText}`);
+  };
 
   const handleNextRound = () => {
     resetRoundData();
-    drawNewBlackCard();
     setRound(round + 1);
   };
 
   const resetRoundData = () => {
     resetPlayerHands();
     setPlayedWhiteCards([]);
+  };
+
+  const toggleHandVisibility = (index) => {
+    const updatedVisibility = [...handVisibility];
+    updatedVisibility[index] = !updatedVisibility[index];
+    setHandVisibility(updatedVisibility);
   };
 
   return (
@@ -119,29 +126,40 @@ export default function App() {
               onChange={(event) => handleNameChange(event, index)}
               placeholder={`Player ${index + 1} Name`}
           />
-          <div className="hand">
-            {player.hand && player.hand.map((card, cardIndex) => (
-              <div key={cardIndex}>
-                <WhiteCard 
-                  key={cardIndex} 
-                  text={card}
-                  selectWinner={() => selectWinner(index)}
-                  selected={selectedCards[index] && selectedCards[index].includes(cardIndex)} 
-                  onClick={() => toggleCardSelection(index, cardIndex)} 
-                /> 
-              </div>
-            ))}
-          </div>
+          <button onClick={() => toggleHandVisibility(index)}>
+            {handVisibility[index] ? 'Hide Hand' : 'Show Hand'}
+          </button>
+          {handVisibility[index] && (
+            <div className="hand">
+              {player.hand && player.hand.map((card, cardIndex) => (
+                <div key={cardIndex}>
+                  <WhiteCard 
+                    key={cardIndex} 
+                    text={card}
+                    selected={selectedCards[index] && selectedCards[index].includes(cardIndex)} 
+                    onClick={() => toggleCardSelection(index, cardIndex)}
+                    selectWinner={() => selectWinner(index, card)} 
+                  /> 
+                </div>
+              ))}
+            </div>
+          )}
           <button onClick={() => playWhiteCard(index)}>Play Selected Cards</button>
           <button onClick={() => drawWhiteCard(index)}>Draw White Card</button>
         </div>
       ))}
       
       <div className="play-area">
-        {playedWhiteCards.map((card, index) => (
+        {playedWhiteCards.map((played, index) => (
           <div key={index}>
-            <h3>{players[index].name}'s Response</h3>
-            <WhiteCard text={card} />
+            <h3>{players[played.playerIndex].name}'s Response</h3>
+            {played.cardsToPlay.map((card, cardIndex) => (
+              <WhiteCard 
+                key={cardIndex} 
+                text={card} 
+                selectWinner={() => selectWinner(played.playerIndex, card)}
+              />
+            ))}
           </div>
         ))}
       </div>
