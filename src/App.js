@@ -25,6 +25,10 @@ export default function App() {
   ]);
   const [playedWhiteCards, setPlayedWhiteCards] = useState([]);
 
+  useEffect(() => {
+    drawInitialHands();
+  }, [round]);
+
   const handleNameChange = (e, index) => {
     const newPlayers = [...players];
     newPlayers[index].name = e.target.value;
@@ -34,6 +38,17 @@ export default function App() {
   const drawWhiteCard = (playerIndex) => {
     const updatedPlayers = [...players];
     updatedPlayers[playerIndex].drawWhiteCard(deck);
+    setPlayers(updatedPlayers);
+    setDeck([...deck]);
+  };
+
+  const drawInitialHands = () => {
+    const updatedPlayers = [...players];
+    updatedPlayers.forEach(player => {
+      while (player.hand.length < 7) {
+        player.drawWhiteCard(deck);
+      }
+    });
     setPlayers(updatedPlayers);
     setDeck([...deck]);
   };
