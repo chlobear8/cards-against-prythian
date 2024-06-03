@@ -1,4 +1,4 @@
-import React, { useState }from 'react';
+import React, { useState } from 'react';
 import BlackCard from './Components/BlackCard';
 import WhiteCard from './Components/WhiteCard';
 import Player from './Player';
@@ -10,11 +10,11 @@ export default function App() {
   const [deck, setDeck] = useState(whiteCardDeck);
   const [currentBlackCard, setCurrentBlackCard] = useState({ text: "" });
   const [players, setPlayers] = useState([
-    { name: '', score: 0, hand: [] },
-    { name: '', score: 0, hand: [] },
-    { name: '', score: 0, hand: [] },
-    { name: '', score: 0, hand: [] },
-    { name: '', score: 0, hand: [] }
+    new Player(''),
+    new Player(''),
+    new Player(''),
+    new Player(''),
+    new Player('')
   ]);
   const [selectedCards, setSelectedCards] = useState([
     [],
@@ -31,14 +31,11 @@ export default function App() {
     setPlayers(newPlayers);
   };
 
-  const drawWhiteCard = (playerIndex, deck) => {
-  const randomIndex = Math.floor(Math.random() * deck.length);
-  const drawnCard = deck.splice(randomIndex, 1)[0];
-  const updatedDeck = [...deck];
-  const updatedPlayers = [...players];
-  updatedPlayers[playerIndex].hand.push(drawnCard);
+  const drawWhiteCard = (playerIndex) => {
+    const updatedPlayers = [...players];
+    updatedPlayers[playerIndex].drawWhiteCard(deck);
     setPlayers(updatedPlayers);
-    setDeck([updatedDeck]);
+    setDeck([...deck]);
   };
 
   const toggleCardSelection = (playerIndex, cardIndex) => {
@@ -51,25 +48,22 @@ export default function App() {
     } else {
       selectedCardsForPlayer.splice(indexOfCard, 1);
     }
-      setSelectedCards(updatedSelectedCards);
+    setSelectedCards(updatedSelectedCards);
   };
 
   const playWhiteCard = (playerIndex) => {
     const cardsToPlay = selectedCards[playerIndex].map(cardIndex => players[playerIndex].hand[cardIndex]);
     const updatedPlayers = [...players];
-    //const cardToPlay = updatedPlayers[playerIndex].hand.splice(cardIndex, 1)[0];
     updatedPlayers[playerIndex].hand = updatedPlayers[playerIndex].hand.filter((_, index) => !selectedCards[playerIndex].includes(index));
     setPlayedWhiteCards(prevCards => [...prevCards, ...cardsToPlay]);
-    setPlayers([updatedPlayers]);
+    setPlayers(updatedPlayers);
     setSelectedCards(new Array(players.length).fill([]));
   };
 
   const resetPlayerHands = () => {
     const resetPlayers = players.map(player => {
-      return {
-        ...player,
-        hand: []
-      };
+      player.hand = [];
+      return player;
     });
     setPlayers(resetPlayers);
   };
@@ -78,7 +72,7 @@ export default function App() {
     const randomIndex = Math.floor(Math.random() * blackCardDeck.length);
     const drawnCard = blackCardDeck.splice(randomIndex, 1)[0];
     setCurrentBlackCard(drawnCard);
-  };  
+  };
 
   const selectWinner = (playerIndex) => {
     const updatedPlayers = [...players];
@@ -98,55 +92,54 @@ export default function App() {
   };
 
   return (
-  <div className="App">
-    <BlackCard text={currentBlackCard.text} />
-    
-    {players.map((player, index) => (
-      <div key={index}>
-        <input 
-            type="text"
-            value={player.name}
-            onChange={(event) => handleNameChange(event, index)}
-            placeholder={`Player ${index + 1} Name`}
-        />
-        <div className="hand">
-          {player.hand && player.hand.map((card, cardIndex) => (
-            <div key={cardIndex} >
-            {/* onClick={() => toggleCardSelection(index, cardIndex)}> */}
-              <WhiteCard 
-                key={cardIndex} 
-                text={card}
-                selectWinner={() => selectWinner(index)}
-                selected={selectedCards[index] && selectedCards[index].includes(cardIndex)} 
-                onClick={() => toggleCardSelection(index, cardIndex)} /> 
-            </div>
-          ))}
-        </div>
-        <button onClick={() => playWhiteCard(index)}>Play Selected Cards</button>
-        <button onClick={() => drawWhiteCard(index, deck)}>Draw White Card</button>
-      </div>
-    ))}
-    
-    <div className="play-area">
-      {playedWhiteCards.map((card, index) => (
-        <div key={index}>
-          <h3>{players[index].name}'s Response</h3>
-          <WhiteCard text={card} />
-        </div>
-      ))}
-    </div>
-    
-    <div className="scoreboard">
+    <div className="App">
+      <BlackCard text={currentBlackCard.text} />
+      
       {players.map((player, index) => (
         <div key={index}>
-          <h3>{player.name}</h3>
-          <p>Score: {player.score}</p>
+          <input 
+              type="text"
+              value={player.name}
+              onChange={(event) => handleNameChange(event, index)}
+              placeholder={`Player ${index + 1} Name`}
+          />
+          <div className="hand">
+            {player.hand && player.hand.map((card, cardIndex) => (
+              <div key={cardIndex}>
+                <WhiteCard 
+                  key={cardIndex} 
+                  text={card}
+                  selectWinner={() => selectWinner(index)}
+                  selected={selectedCards[index] && selectedCards[index].includes(cardIndex)} 
+                  onClick={() => toggleCardSelection(index, cardIndex)} 
+                /> 
+              </div>
+            ))}
+          </div>
+          <button onClick={() => playWhiteCard(index)}>Play Selected Cards</button>
+          <button onClick={() => drawWhiteCard(index)}>Draw White Card</button>
         </div>
       ))}
-    </div>
-    
-    <button onClick={handleNextRound}>Next Round</button>
+      
+      <div className="play-area">
+        {playedWhiteCards.map((card, index) => (
+          <div key={index}>
+            <h3>{players[index].name}'s Response</h3>
+            <WhiteCard text={card} />
+          </div>
+        ))}
+      </div>
+      
+      <div className="scoreboard">
+        {players.map((player, index) => (
+          <div key={index}>
+            <h3>{player.name}</h3>
+            <p>Score: {player.score}</p>
+          </div>
+        ))}
+      </div>
+      
+      <button onClick={handleNextRound}>Next Round</button>
     </div>
   );
 }
-
