@@ -37,13 +37,6 @@ export default function App() {
     setPlayers(newPlayers);
   };
 
-  const drawWhiteCard = (playerIndex) => {
-    const updatedPlayers = [...players];
-    updatedPlayers[playerIndex].drawWhiteCard(deck);
-    setPlayers(updatedPlayers);
-    setDeck([...deck]);
-  };
-
   const drawInitialHands = () => {
     const updatedPlayers = [...players];
     updatedPlayers.forEach(player => {
@@ -75,10 +68,13 @@ export default function App() {
   };
 
   const playWhiteCard = (playerIndex) => {
-    const cardsToPlay = selectedCards[playerIndex].map(cardIndex => players[playerIndex].hand[cardIndex]);
+    const cardsToPlay = selectedCards[playerIndex].map(cardIndex => ({
+      playerIndex,
+      card: players[playerIndex].hand[cardIndex]
+    }));
     const updatedPlayers = [...players];
     updatedPlayers[playerIndex].hand = updatedPlayers[playerIndex].hand.filter((_, index) => !selectedCards[playerIndex].includes(index));
-    setPlayedWhiteCards(prevCards => [...prevCards, { playerIndex, cardsToPlay }]);
+    setPlayedWhiteCards(prevCards => [...prevCards, ...cardsToPlay]);
     setPlayers(updatedPlayers);
     setSelectedCards(new Array(players.length).fill([]));
   };
@@ -93,14 +89,6 @@ export default function App() {
     setPlayers(updatedPlayers);
     setDeck([...deck]);
   };
-
-  // const resetPlayerHands = () => {
-  //   const resetPlayers = players.map(player => {
-  //     player.hand = [];
-  //     return player;
-  //   });
-  //   setPlayers(resetPlayers);
-  // };
 
   const selectWinner = (playerIndex, cardText) => {
     const updatedPlayers = [...players];
@@ -123,6 +111,14 @@ export default function App() {
     const updatedVisibility = [...handVisibility];
     updatedVisibility[index] = !updatedVisibility[index];
     setHandVisibility(updatedVisibility);
+  };
+
+  const shuffleArray = (array) => {
+    for (let i = array.length -1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   };
 
   return (
@@ -155,22 +151,18 @@ export default function App() {
               ))}
             </div>
           )}
-          <button onClick={() => playWhiteCard(index)}>Play Selected Cards</button>
-          <button onClick={() => drawWhiteCard(index)}>Draw White Card</button>
+          <button onClick={() => playWhiteCard(index)}>Play Selected Card</button>
         </div>
       ))}
       
       <div className="play-area">
-        {playedWhiteCards.map((played, index) => (
+        {shuffleArray([...playedWhiteCards]).map((played, index) => (
           <div key={index}>
-            <h3>{players[played.playerIndex].name}'s Response</h3>
-            {played.cardsToPlay.map((card, cardIndex) => (
-              <WhiteCard 
-                key={cardIndex} 
-                text={card} 
-                selectWinner={() => selectWinner(played.playerIndex, card)}
-              />
-            ))}
+            <WhiteCard 
+              key={index} 
+              text={played.card} 
+              selectWinner={() => selectWinner(played.playerIndex, played.card)}
+            />
           </div>
         ))}
       </div>

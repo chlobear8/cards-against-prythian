@@ -220,7 +220,7 @@ const blackCardDeck = [
     text: "I'd rather slit my throat than hear about ___ ever again.",
   },
   {
-    text: "Amren was probablu in prison for ___.",
+    text: "Amren was probably in prison for ___.",
   },
   {
     text: "I love you, ___ and all.",
