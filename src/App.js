@@ -67,14 +67,11 @@ export default function App() {
     setSelectedCards(updatedSelectedCards);
   };
 
-  const playWhiteCard = (playerIndex) => {
-    const cardsToPlay = selectedCards[playerIndex].map(cardIndex => ({
-      playerIndex,
-      card: players[playerIndex].hand[cardIndex]
-    }));
+  const playWhiteCard = (playerIndex, cardIndex) => {
+    const cardToPlay = players[playerIndex].hand[cardIndex]; 
     const updatedPlayers = [...players];
-    updatedPlayers[playerIndex].hand = updatedPlayers[playerIndex].hand.filter((_, index) => !selectedCards[playerIndex].includes(index));
-    setPlayedWhiteCards(prevCards => [...prevCards, ...cardsToPlay]);
+    updatedPlayers[playerIndex].hand = updatedPlayers[playerIndex].hand.filter((_, index) => index !== cardIndex);
+    setPlayedWhiteCards(prevCards => [...prevCards, { playerIndex, card: cardToPlay }]);
     setPlayers(updatedPlayers);
     setSelectedCards(new Array(players.length).fill([]));
   };
@@ -121,6 +118,11 @@ export default function App() {
     return array;
   };
 
+  const handlePlayClick = (playerIndex, cardIndex) => {
+    toggleCardSelection(playerIndex, cardIndex);
+    playWhiteCard(playerIndex, cardIndex);
+  };
+
   return (
     <div className="App">
       <BlackCard text={currentBlackCard.text} />
@@ -144,14 +146,13 @@ export default function App() {
                     key={cardIndex} 
                     text={card}
                     selected={selectedCards[index] && selectedCards[index].includes(cardIndex)} 
-                    onClick={() => toggleCardSelection(index, cardIndex)}
-                    selectWinner={() => selectWinner(index, card)} 
+                    onClick={() => handlePlayClick(index, cardIndex)}
+                    buttonText="Play this card"
                   /> 
                 </div>
               ))}
             </div>
           )}
-          <button onClick={() => playWhiteCard(index)}>Play Selected Card</button>
         </div>
       ))}
       
@@ -161,7 +162,8 @@ export default function App() {
             <WhiteCard 
               key={index} 
               text={played.card} 
-              selectWinner={() => selectWinner(played.playerIndex, played.card)}
+              onClick={() => selectWinner(played.playerIndex, played.card)}
+              buttonText="Select as winner"
             />
           </div>
         ))}

@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function WhiteCard({ text, onClick, buttonText }) {
   return (
-    <div className="white-card" onClick={onClick}>
+    <div className="white-card">
       <p>{text}</p>
-      <button>{buttonText}</button>
+      <button onClick={onClick}>{buttonText}</button>
     </div>
   );
 };
